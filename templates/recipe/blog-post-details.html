@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} BlogPost {% endblock title %}
+
+{% block content %}
+
+    <!-- ##### Blog Area Start ##### -->
+    <div class="blog-area section-padding-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="blog-posts-area">
+                        <a href="{% url 'BlogPost' %}" class=" delicious-btn mb-30">Back</a>
+                        <!-- Single Blog Area -->
+                        <div class="single-blog-area mb-80">
+                            <!-- Thumbnail -->
+                            <div class="blog-thumbnail">
+                                <img src="{{ BLOGDETAILS.blog_images.url }}" alt="">
+                                <!-- Post Date -->
+                                <div class="post-date">
+                                    <a href="#"><span>{{ BLOGDETAILS.create_at|date:"j" }}</span>{{ BLOGDETAILS.create_at|date:"F" }} <br> {{ BLOGDETAILS.create_at|date:"Y" }}</a>
+                                </div>
+                            </div>
+                            <!-- Content -->
+                            <div class="blog-content">
+                                <a href="#" class="post-title">{{ BLOGDETAILS.title }}</a>
+                                <div class="meta-data">by <a href="#">{{ user.username }}</a> in <a href="#">{{ BLOGDETAILS.blog_category.name }}</a>
+                                </div>
+                                <p>{{ BLOGDETAILS.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Area End ##### -->
+
+{% endblock content %}
+   

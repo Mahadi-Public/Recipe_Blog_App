@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} BlogPost {% endblock title %}
+
+{% block content %}
+    <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb-area bg-img bg-overlay" style="background-image: url({{ BLOG_NEWSLETTER.0.news_images.url }});">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <div class="breadcumb-text text-center">
+                        <h2>Blog</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Blog Area Start ##### -->
+    <div class="blog-area section-padding-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="blog-posts-area">
+                        {% if BLOG_LIST %}
+                            {% for blog in BLOG_LIST %}
+                                <!-- Single Blog Area -->
+                                <div class="single-blog-area mb-80">
+                                    <!-- Thumbnail -->
+                                    <div class="blog-thumbnail">
+                                        <img src="{{ blog.blog_images.url }}" alt="">
+                                        <!-- Post Date -->
+                                        <div class="post-date">
+                                            <a href="#"><span>{{ blog.create_at|date:"j" }}</span>{{ blog.create_at|date:"F" }} <br> {{ blog.create_at|date:"Y" }}</a>
+                                        </div>
+                                    </div>
+                                    <!-- Content -->
+                                    <div class="blog-content">
+                                        <a href="#" class="post-title">{{ blog.title }}</a>
+                                        <div class="meta-data">by <a href="#">{{ user.username }}</a> in <a href="#">{{ blog.blog_category.name }}</a>
+                                        </div>
+                                        <p>{{ blog.description|truncatechars:500 }}</p>
+                                        <a href="{% url 'BlogPostDetails' blog.id %}" class="btn delicious-btn mt-30">Read More</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No Data Here!</p>
+                        {% endif %}
+                    </div>
+    
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if PAGE_OBJECT.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ PAGE_OBJECT.previous_page_number }}">
+                                        <button type="button" class="btn btn-sm btn-success">Previous</button> 
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                        <button type="button" class="btn btn-sm btn-success" disabled="disabled">First</button>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% if PAGE_OBJECT.paginator.num_pages > 5 %}
+                                {% for i in PAGE_OBJECT.paginator.page_range %}
+                                    {% if i >= PAGE_OBJECT.number|add:"-4" and i <= PAGE_OBJECT.number|add:"4" %}
+                                        <li class="page-item {% if i == PAGE_OBJECT.number %}active{% endif %}">
+                                            <a class="page-link" href="?page={{ i }}"> 
+                                                <button type="button" class="btn btn-sm {% if i == PAGE_OBJECT.number %}btn-success{% else %}btn-default{% endif %}">{{ i }}</button>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for i in PAGE_OBJECT.paginator.page_range %}
+                                    <li class="page-item {% if i == PAGE_OBJECT.number %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ i }}">
+                                            <button type="button" class="btn btn-sm {% if i == PAGE_OBJECT.number %}btn-success{% else %}btn-default{% endif %}">{{ i }}</button> 
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if PAGE_OBJECT.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ PAGE_OBJECT.next_page_number }}">
+                                        <button type="button" class="btn btn-sm btn-success">Next</button> 
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                        <button type="button" class="btn btn-sm btn-success" disabled="disabled">Last</button>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <div class="blog-sidebar-area">
+
+                        <!-- Widget -->
+                        <div class="single-widget mb-80">
+                            <h6>Archive</h6>
+                            <ul class="list">
+                                {% for date in DISTINCT_DATES %}
+                                    <li>
+                                        <a href="?month={{ date.month|date:"F" }}&year={{ date.month|date:"Y" }}">
+                                            {{ date.month|date:"F Y" }} ({{ date.count }})
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Widget -->
+                        <div class="single-widget mb-80">
+                            <h6>Categories</h6>
+                            {% for category in BLOG_CATEGORY %}
+                                <ul class="list">
+                                    <li><a href="?category={{ category.name|urlencode }}">{{ category.name }}</a></li>
+                                </ul>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Widget -->
+                        <div class="single-widget mb-80">
+                            <h6>Newsletter</h6>
+                            <!-- Form -->
+                            {% for blogletters  in BLOG_NEWSLETTER %}
+                                <div class="newsletter-form bg-img bg-overlay" style="background-image: url({{ blogletters.news_images.url }});">
+                                    <form action="#" method="post">
+                                    {% csrf_token %}
+                                        {{ NEWS_LETTER.email }}
+                                        <button type="submit" class="btn delicious-btn w-100">Subscribe</button>
+                                    </form>
+                                    <p>{{ blogletters.description }}</p>
+                                </div>
+                            {% endfor %}    
+                        </div>
+
+                        <!-- Widget -->
+                        {% comment %} <div class="single-widget mb-80">
+                            <div class="quote-area text-center">
+                                <span>"</span>
+                                <h4>Nothing is better than going home to family and eating good food and relaxing</h4>
+                                <p>John Smith</p>
+                                <div class="date-comments d-flex justify-content-between">
+                                    <div class="date">January 04, 2018</div>
+                                    <div class="comments">2 Comments</div>
+                                </div>
+                            </div>
+                        </div> {% endcomment %}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Area End ##### -->
+    
+{% endblock content %}
+   

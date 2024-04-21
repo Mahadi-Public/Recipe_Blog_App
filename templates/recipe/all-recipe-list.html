@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Receipe Post {% endblock title %} 
+{% block content %}
+    {% block navbar %}
+    {% endblock navbar %}
+        <!-- Buttons -->
+        <div class="container py-5 mx-5">
+            <a href="{% url 'HomePage'  %}" class="btn delicious-btn btn-4 ">Back</a>
+        </div>
+        <!-- ##### Breadcumb Area Start ##### -->
+        <div class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/breadcumb1.jpg' %});">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-12">
+                        <div class="breadcumb-text text-center">
+                            <h2>All Recipe's</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="receipe-post-area py-5">
+            <!-- Receipe Post Search -->
+            <div class="receipe-post-search mb-0">
+                <div class="container">
+                    <form action="{% url 'RecipePostList' %}" method="GET">
+                        <div class="row">
+                            <div class="col-12 col-lg-4">
+                                <select name="select_category" id="select1">
+                                    <option value="1">All Receipies Categories</option>
+                                {% for category in RECIPE_CATEGORY %}
+                                    <option value="{{ category.id }}"  {% if category.id == selected_category %} selected {% endif %} >{{ category.name }}</option>
+                                {% endfor %}
+                                </select>
+
+                            </div>
+                            <div class="col-12 col-lg-5">
+                                <input type="search" name="recipe_category" value="{{ search_query }}" placeholder="Search Receipies">
+                            </div>
+                            <div class="col-12 col-lg-3 text-right">
+                                <button type="submit" class="btn delicious-btn">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div> 
+        </div>    
+
+        <!-- ##### Breadcumb Area End ##### -->
+        <div class="container mt-5">
+            <div class="row">
+                {% if RECIPE_LIST %}
+                    {% for recipe_post in RECIPE_LIST %}
+                        <!-- Single Best Receipe Area -->
+                        <div class="col-12 col-sm-6 col-lg-4">
+                            <div class="single-best-receipe-area mb-30">
+                                <img style="height: 170px; width:340px" src="{{ recipe_post.images.first.image.url }}" alt="">
+                                <div class="receipe-content">
+                                    <a class="text-center" href="{% url 'RecipePost' recipe_post.id %}">
+                                        <h5>{{ recipe_post.title }}</h5>
+                                    </a>
+                                    <div class="ratings">
+                                        {% for star in RATTING_RANGE %}
+                                            {% if star < recipe_post.rating %}
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                            {% else %}
+                                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}   
+                {% else %}
+                    <div class="col-12">
+                        <p>No recipes available for the selected category or search query.</p>
+                    </div>
+                {% endif %} 
+            </div>
+        </div>
+    {% block footer %}
+    {% endblock footer %}
+
+{% endblock content %}
